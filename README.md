@@ -1,4 +1,4 @@
-# typescript-transform-x
+# typescript-transform-unspec
 Typescript transform plugin
 
 ## Resources
