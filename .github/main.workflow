@@ -1,22 +1,28 @@
-workflow "Build, Test, and Publish" {
+workflow "Main Workflow" {
   on = "push"
   resolves = ["Publish"]
 }
 
-action "Build" {
+action "Install" {
   uses = "actions/npm@master"
   args = "install"
 }
 
 action "Test" {
-  needs = "Build"
+  needs = "Install"
+  uses = "actions/npm@master"
+  args = "test"
+}
+
+action "Build" {
+  needs = "Test"
   uses = "actions/npm@master"
   args = "test"
 }
 
 # Filter for master branch
 action "Master" {
-  needs = "Test"
+  needs = "Build"
   uses = "actions/bin/filter@master"
   args = "branch master"
 }
