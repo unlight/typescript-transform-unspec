@@ -4,21 +4,21 @@ workflow "Main" {
 }
 
 action "Install" {
-  uses = "actions/npm@master"
+  uses = "docker://node"
   runs = "npm"
   args = "install"
 }
 
 action "Test" {
   needs = "Install"
-  uses = "actions/npm@master"
+  uses = "docker://node"
   runs = "npm"
   args = "test"
 }
 
 action "Build" {
   needs = "Install"
-  uses = "actions/npm@master"
+  uses = "docker://node"
   runs = "npm"
   args = "run build"
 }
@@ -32,7 +32,7 @@ action "Master" {
 
 action "Publish" {
   needs = "Master"
-  uses = "actions/npm@master"
+  uses = "docker://node"
   runs = "npx"
   args = "semantic-release"
   secrets = ["NPM_TOKEN", "GITHUB_TOKEN"]
