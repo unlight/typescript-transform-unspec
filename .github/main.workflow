@@ -1,15 +1,30 @@
-workflow "Build and deploy on push" {
+workflow "Build, Test, and Publish" {
   on = "push"
-  resolves = ["GitHub Action for npm", "docker://node"]
+  resolves = ["Publish"]
 }
 
-action "GitHub Action for npm" {
-  uses = "actions/npm@59b64a598378f31e49cb76f27d6f3312b582f680"
+action "Build" {
+  uses = "actions/npm@master"
   args = "install"
 }
 
-action "docker://node" {
-  uses = "docker://node"
-  runs = "npm"
-  args = "install"
+action "Test" {
+  needs = "Build"
+  uses = "actions/npm@master"
+  args = "test"
+}
+
+# Filter for master branch
+action "Master" {
+  needs = "Test"
+  uses = "actions/bin/filter@master"
+  args = "branch master"
+}
+
+action "Publish" {
+  needs = "Master"
+  uses = "actions/npm@master"
+  runs = "npx"
+  args = "semantic-release"
+  secrets = ["NPM_TOKEN", "GITHUB_TOKEN"]
 }
