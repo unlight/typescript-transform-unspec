@@ -1,24 +1,30 @@
-import { PlainObject } from 'simplytyped';
+import * as ts from 'typescript';
 
-const dict: PlainObject = {};
-
-/**
- * Hello function whithout parameter
- * @returns result string
- */
-export function hello(): string;
-
-/**
- * This is hello function
- * @returns result string
- */
-export function hello(greet?: string) {
-    return `${greet} world`;
+function typescriptTransformUnspec<T extends ts.Node>(program: ts.Program): ts.TransformerFactory<T> {
+    return (context: ts.TransformationContext) => {
+        const visit: ts.Visitor = (node) => {
+            if (isSpecExpressionStatement(node)) {
+                return undefined;
+            }
+            return ts.visitEachChild(node, (child) => visit(child), context);
+        };
+        return (node) => ts.visitNode(node, visit);
+    };
 }
 
-export class X {
-
-    constructor(
-        private readonly o: PlainObject,
-    ) { }
+function isSpecExpressionStatement(node: ts.Node) {
+    return (ts.isExpressionStatement(node) && ts.isCallExpression(node.expression)
+        && ts.isIdentifier(node.expression.expression)
+        && node.expression.expression.escapedText === 'it');
 }
+
+if (typeof it !== 'function') {
+    // @ts-ignore
+    var it: any = () => { };
+}
+it('smoke', () => {
+    expect(typescriptTransformUnspec).toBeTruthy();
+});
+
+module.exports = typescriptTransformUnspec;
+module.exports.default = typescriptTransformUnspec;
