@@ -1,11 +1,8 @@
 const unspecTransformer = require('./src/index');
 
 module.exports = async (options) => ({
-    externals: {
-        typescript: 'typescript',
-    },
     entry: {
-        lib: `${__dirname}/src/index.ts`,
+        example: `${__dirname}/src/example.ts`,
     },
     output: {
         path: `${__dirname}/dist`,
