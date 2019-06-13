@@ -16,8 +16,15 @@ action "Test" {
   args = "test"
 }
 
-action "Build" {
+action "Pre Build" {
   needs = "Install"
+  uses = "docker://stedolan/jq"
+  runs = "sh"
+  args = "Taskfile prebuild"
+}
+
+action "Build" {
+  needs = "Build Options"
   uses = "docker://node"
   runs = "npm"
   args = "run build"

@@ -1,15 +1,18 @@
 #!/bin/bash
 PATH="$PWD/node_modules/.bin":$PATH
 
-build() {
+prebuild() {
     rm -rf dist
     cp -rf src dist && /usr/bin/find dist -name '*.spec.ts' | xargs rm -f
     cat tsconfig.json | jq 'del(.include, .compilerOptions.outDir)' > dist/tsconfig.json
-    pushd dist
+    cp README.md LICENSE package.json dist
+}
+
+build() {
+    cd dist
     tsc -p .
     rm tsconfig.json
-    popd
-    cp README.md LICENSE package.json dist
+    cd ..
 }
 
 "$@"
