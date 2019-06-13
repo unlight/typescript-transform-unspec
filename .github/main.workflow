@@ -24,7 +24,7 @@ action "Pre Build" {
 }
 
 action "Build" {
-  needs = "Build Options"
+  needs = "Pre Build"
   uses = "docker://node"
   runs = "npm"
   args = "run build"
