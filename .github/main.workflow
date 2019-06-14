@@ -1,15 +1,46 @@
-workflow "Build and deploy on push" {
+workflow "Main" {
   on = "push"
-  resolves = ["GitHub Action for npm", "docker://node"]
+  resolves = ["Publish"]
 }
 
-action "GitHub Action for npm" {
-  uses = "actions/npm@59b64a598378f31e49cb76f27d6f3312b582f680"
-  args = "install"
-}
-
-action "docker://node" {
+action "Install" {
   uses = "docker://node"
   runs = "npm"
   args = "install"
+}
+
+action "Test" {
+  needs = "Install"
+  uses = "docker://node"
+  runs = "npm"
+  args = "test"
+}
+
+action "Pre Build" {
+  needs = "Install"
+  uses = "docker://stedolan/jq"
+  runs = "sh"
+  args = "Taskfile prebuild"
+}
+
+action "Build" {
+  needs = "Pre Build"
+  uses = "docker://node"
+  runs = "npm"
+  args = "run build"
+}
+
+# Filter for master branch
+action "Master" {
+  needs = ["Test", "Build"]
+  uses = "actions/bin/filter@master"
+  args = "branch master"
+}
+
+action "Publish" {
+  needs = "Master"
+  uses = "docker://node"
+  runs = "npx"
+  args = "semantic-release"
+  secrets = ["NPM_TOKEN", "GITHUB_TOKEN"]
 }

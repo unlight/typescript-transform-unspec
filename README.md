@@ -1,5 +1,92 @@
-# typescript-transform-x
-Typescript transform plugin
+# typescript-transform-unspec
+Typescript transform plugin removes spec definition from source file.  
+Inspired by [unassert](https://github.com/unassert-js/unassert).
+
+## Motivation
+Imagine we have `function.ts` with single function. Usually we create `function.spec.ts` with tests.
+But what if we can keep tests in same file, and remove spec defenition for production.
+
+## Example
+
+### Before
+```ts
+export function hello(greet = 'world') {
+    return `hello ${greet}`;
+}
+
+it('hello world test', () => {
+    expect(hello()).toBe('hello world');
+});
+```
+
+### After (`it` removed)
+```js
+function hello(greet) {
+    if (greet === void 0) { greet = 'world'; }
+    return "hello " + greet;
+}
+````
+
+### Pros and Cons
+\+ All in one file  
+\- Collecting coverage can be tricky  
+
+## Installation
+```sh
+npm install --save-dev typescript-transform-unspec
+```
+
+## Usage
+
+#### webpack (with ts-loader or awesome-typescript-loader)
+```js
+// webpack.config.js
+const unspecTransformer = require('typescript-transform-unspec');
+
+rules: [
+  {
+    test: /\.tsx?$/,
+    loader: 'ts-loader', // or 'awesome-typescript-loader'
+    options: {
+      getCustomTransformers: program => ({
+          before: [
+              unspecTransformer(program),
+          ]
+      })
+    }
+  },
+]
+```
+
+#### TTypescript
+```json
+// tsconfig.json
+{
+    "compilerOptions": {
+        "plugins": [
+            { "transform": "typescript-transform-unspec" },
+        ]
+    },
+}
+```
+
+#### Rollup (with rollup-plugin-typescript2)
+```js
+// rollup.config.js
+import typescript from 'rollup-plugin-typescript2';
+import unspecTransformer from 'typescript-transform-unspec';
+
+plugins: [
+  typescript({ 
+    transformers: [
+        service => ({ 
+            before: [unspecTransformer(service.getProgram())],
+            after: [],
+        }),
+    ],
+  }),
+]
+```
 
 ## Resources
 - https://dev.doctorevidence.com/how-to-write-a-typescript-transform-plugin-fc5308fdd943
