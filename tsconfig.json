@@ -17,6 +17,11 @@
     "skipLibCheck": true,
     "lib": [
       "esnext"
+    ],
+    "plugins": [
+      {
+        "transform": "./src/index.ts"
+      }
     ]
   },
   "include": [
