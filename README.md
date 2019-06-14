@@ -19,13 +19,17 @@ it('hello world test', () => {
 });
 ```
 
-### After
+### After (`it` removed)
 ```js
 function hello(greet) {
     if (greet === void 0) { greet = 'world'; }
     return "hello " + greet;
 }
 ````
+
+### Pros and Cons
+\+ All in one file  
+\- Collecting coverage can be tricky  
 
 ## Installation
 ```sh

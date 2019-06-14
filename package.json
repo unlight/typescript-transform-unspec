@@ -11,7 +11,8 @@
     "node": ">=8"
   },
   "repository": {
-    "type": "git"
+    "type": "git",
+    "url": "https://github.com/unlight/typescript-transform-unspec.git"
   },
   "scripts": {
     "test": "npm run eslint && npm run tscheck && npm run test:cov && npm run typecov",
@@ -39,8 +40,9 @@
     "setupwebpack": "npm i -D webpack webpack-cli webpack-dev-server html-webpack-plugin source-map-loader ts-loader html-loader swc-loader @swc/core",
     "commit": "git-cz"
   },
+  "dependencies": {},
   "peerDependencies": {
-    "typescript": ">=3.2"
+    "typescript": ">=2.9"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^3.0.2",
@@ -76,6 +78,7 @@
     "tslint-clean-code": "^0.2.9",
     "tslint-microsoft-contrib": "^6.2.0",
     "tslint-sonarts": "^1.9.0",
+    "ttypescript": "^1.5.7",
     "type-coverage": "^2.0.2",
     "typescript": "~3.4.5",
     "watchexec-bin": "^1.0.0",

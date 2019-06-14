@@ -1,18 +1,18 @@
 #!/bin/bash
 PATH="$PWD/node_modules/.bin":$PATH
 
-prebuild() {
-    rm -rf dist
-    cp -rf src dist && /usr/bin/find dist -name '*.spec.ts' | xargs rm -f
-    cat tsconfig.json | jq 'del(.include, .compilerOptions.outDir)' > dist/tsconfig.json
-    cp README.md LICENSE package.json dist
-}
-
 build() {
+    set -x
+    rm -rfv dist
+    cp -rfv src dist && /usr/bin/find dist -name '*.spec.ts' | xargs rm -rvf
+    cat tsconfig.json | jq 'del(.include, .compilerOptions.outDir)' | jq -r '.compilerOptions.plugins[0].transform = "./index.ts"' > dist/tsconfig.json
+    cp -v README.md LICENSE package.json dist
     cd dist
-    tsc -p .
-    rm tsconfig.json
+    rm -rvf example.ts
+    ttsc -p .
+    rm -rvf tsconfig.json
     cd ..
+    set +x
 }
 
 "$@"
