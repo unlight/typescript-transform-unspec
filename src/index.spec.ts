@@ -21,10 +21,29 @@ function transform(sourceText: string) {
 
 it('smoke test', () => {
     expect(lib).toBeTruthy();
-    expect(transform(';')).toEqual(';');
+    expect(transform(';')).toBe(';');
 });
 
 it('should be removed it call expression', () => {
-    debugger;
-    expect(transform('it()')).toEqual('');
+    expect(transform('it()')).toBe('');
+    expect(transform('xit()')).toBe('');
+    expect(transform('fit()')).toBe('');
+});
+
+it('should be removed describe call expression', () => {
+    expect(transform('describe()')).toBe('');
+    expect(transform('xdescribe()')).toBe('');
+    expect(transform('fdescribe()')).toBe('');
+});
+
+it('functions with modifiers', () => {
+    expect(transform('describe.only()')).toBe('');
+    expect(transform('describe.skip()')).toBe('');
+    expect(transform('describe.any()')).toBe('');
+    expect(transform('test.only()')).toBe('');
+    expect(transform('test.skip()')).toBe('');
+    expect(transform('test.any()')).toBe('');
+    expect(transform('it.only()')).toBe('');
+    expect(transform('it.skip()')).toBe('');
+    expect(transform('it.any()')).toBe('');
 });

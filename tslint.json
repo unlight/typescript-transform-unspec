@@ -47,6 +47,7 @@
     "no-reserved-keywords": false,
     "no-increment-decrement": false,
     "no-unnecessary-bind": false,
+    "newline-per-chained-call": false,
     ".": false
   }
 }

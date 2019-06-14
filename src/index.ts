@@ -15,10 +15,47 @@ function visitor(node: ts.Node): ts.Node | undefined {
     return node;
 }
 
+// todo: delete only global
+const testMethodList = [
+    'jasmine',
+    'jest',
+    'before',
+    'after',
+    'beforeAll',
+    'beforeEach',
+    'afterAll',
+    'afterEach',
+    'describe',
+    'fdescribe',
+    'xdescribe',
+    'it',
+    'fit',
+    'xit',
+    'test',
+    'xtest',
+    'spyOn',
+];
+
+function isTestExpressionText(text: string | ts.__String) {
+    return testMethodList.includes(String(text));
+}
+
 function isSpecExpressionStatement(node: ts.Node) {
-    return (ts.isExpressionStatement(node) && ts.isCallExpression(node.expression)
-        && ts.isIdentifier(node.expression.expression)
-        && node.expression.expression.escapedText === 'it');
+    if (ts.isExpressionStatement(node) && ts.isCallExpression(node.expression)) {
+        const callExpr = node.expression.expression;
+        if (ts.isIdentifier(callExpr) && isTestExpressionText(callExpr.escapedText)) {
+            console.log("callExpr", callExpr.flags);
+            return true;
+        }
+        if (ts.isPropertyAccessExpression(callExpr)) {
+            const propertyAccessExpr = callExpr.expression;
+            if (ts.isIdentifier(propertyAccessExpr) && isTestExpressionText(propertyAccessExpr.escapedText)) {
+                console.log("propertyAccessExpr", propertyAccessExpr.flags);
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 module.exports = typescriptTransformUnspec;
