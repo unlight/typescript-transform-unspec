@@ -1,14 +1,15 @@
 import * as ts from 'typescript';
 
-export function typescriptTransformUnspec(program: ts.Program, options?): ts.TransformerFactory<ts.SourceFile> {
+export default function typescriptTransformUnspec(program: ts.Program): ts.TransformerFactory<ts.SourceFile> { // tslint:disable-line:no-default-export
     return (context) => (file) => visitNodeAndChildren(file, program, context);
 }
 
 function visitNodeAndChildren(node: ts.Node, program: ts.Program, context: ts.TransformationContext): ts.SourceFile {
-    return ts.visitEachChild(visitor(node), (childNode) => visitNodeAndChildren(childNode, program, context), context) as ts.SourceFile;
+    const visitor = (childNode) => visitNodeAndChildren(childNode, program, context);
+    return ts.visitEachChild<ts.SourceFile>(<ts.SourceFile>filterNode(node), visitor, context);
 }
 
-function visitor(node: ts.Node): ts.Node | undefined {
+function filterNode<T extends ts.Node>(node: T): T | undefined {
     if (isSpecExpressionStatement(node)) {
         return undefined;
     }
@@ -44,18 +45,16 @@ function isSpecExpressionStatement(node: ts.Node) {
     if (ts.isExpressionStatement(node) && ts.isCallExpression(node.expression)) {
         const callExpr = node.expression.expression;
         if (ts.isIdentifier(callExpr) && isTestExpressionText(callExpr.escapedText)) {
-            console.log("callExpr", callExpr.flags);
             return true;
         }
         if (ts.isPropertyAccessExpression(callExpr)) {
             const propertyAccessExpr = callExpr.expression;
             if (ts.isIdentifier(propertyAccessExpr) && isTestExpressionText(propertyAccessExpr.escapedText)) {
-                console.log("propertyAccessExpr", propertyAccessExpr.flags);
                 return true;
             }
         }
-        return false;
     }
+    return false;
 }
 
 module.exports = typescriptTransformUnspec;

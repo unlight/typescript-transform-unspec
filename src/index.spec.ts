@@ -1,15 +1,13 @@
 /* eslint-disable @typescript-eslint/tslint/config */
-import * as lib from './index';
+import transformPlugin from './index';
 import * as ts from 'typescript';
-
-let transformPlugin: typeof lib.typescriptTransformUnspec = lib as any;
 
 function transform(sourceText: string) {
     const program = ts.createProgram({
         rootNames: [],
         options: {},
     });
-    const transformer = transformPlugin(program, {});
+    const transformer = transformPlugin(program);
     const sourceFile = ts.createSourceFile('filename.tsx', sourceText, ts.ScriptTarget.ES5, true, ts.ScriptKind.TSX);
     let result: string | undefined;
     const writeCallback = (fileName: string, data: string) => {
@@ -20,7 +18,7 @@ function transform(sourceText: string) {
 }
 
 it('smoke test', () => {
-    expect(lib).toBeTruthy();
+    expect(transformPlugin).toBeTruthy();
     expect(transform(';')).toBe(';');
 });
 

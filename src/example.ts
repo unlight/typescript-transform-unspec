@@ -6,10 +6,8 @@ it('hello world test', () => {
     expect(hello()).toBe('hello world');
 });
 
-jest.mock('foo');
-
 describe('hello world test', () => {
     beforeAll(() => {
-        jest.mock('foo');
+        jest.mock('inspector');
     });
 });

@@ -2,11 +2,16 @@
   "name": "typescript-transform-unspec",
   "version": "0.0.0-dev",
   "license": "MIT",
-  "description": "Typescript transform plugin",
+  "description": "Typescript transform plugin removes spec definition from source file",
   "main": "index.js",
   "typings": "index.d.ts",
   "author": "2019",
-  "keywords": [],
+  "keywords": [
+    "typescript-transformer",
+    "typescript-plugin",
+    "typescript-transform-plugin",
+    "typescript-compiler"
+  ],
   "engines": {
     "node": ">=8"
   },
