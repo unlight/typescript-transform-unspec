@@ -11,7 +11,7 @@ prebuild() {
 build() {
     cd dist
     rm example.ts
-    tsc -p .
+    ttsc -p .
     rm tsconfig.json
     cd ..
 }
