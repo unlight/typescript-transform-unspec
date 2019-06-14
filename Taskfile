@@ -1,14 +1,11 @@
 #!/bin/bash
 PATH="$PWD/node_modules/.bin":$PATH
 
-prebuild() {
+build() {
     rm -rf dist
     cp -rf src dist && /usr/bin/find dist -name '*.spec.ts' | xargs rm -f
-    cat tsconfig.json | jq 'del(.include, .compilerOptions.outDir)' > dist/tsconfig.json
+    cat tsconfig.json | jq 'del(.include, .compilerOptions.outDir)' | jq -r '.compilerOptions.plugins[0].transform = "./index.ts"' > dist/tsconfig.json
     cp README.md LICENSE package.json dist
-}
-
-build() {
     cd dist
     rm example.ts
     ttsc -p .
